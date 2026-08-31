@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DZOFFICIAL — Projekti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16112e;
+    --purple-deep: #241a5e;
+    --purple: #4b3fb0;
+    --purple-light: #8c64e6;
+    --off-white: #f3f1fa;
+    --grey: #a79fc9;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink);
+    color: var(--off-white);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  .display { font-family: 'Sora', sans-serif; }
+
+  /* Background sparkle field */
+  .bg-glow {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(140,100,230,0.25), transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(75,63,176,0.3), transparent 45%),
+      radial-gradient(circle at 50% 90%, rgba(140,100,230,0.15), transparent 50%);
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 6%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(145deg, var(--purple-light), var(--purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .brand-mark svg { width: 18px; height: 18px; }
+  .brand-name {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.3px;
+  }
+  nav .links {
+    display: flex;
+    gap: 32px;
+    font-size: 14px;
+    color: var(--grey);
+  }
+  nav .links a { color: var(--grey); text-decoration: none; }
+  nav .links a:hover { color: var(--off-white); }
+
+  /* Hero */
+  .hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 70px 6% 90px;
+  }
+  .hero .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(140,100,230,0.12);
+    border: 1px solid rgba(140,100,230,0.3);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    color: var(--purple-light);
+    margin-bottom: 28px;
+  }
+  .hero .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #6ee7a0;
+  }
+  h1.display {
+    font-size: clamp(38px, 6vw, 62px);
+    font-weight: 800;
+    line-height: 1.1;
+    max-width: 780px;
+    letter-spacing: -1px;
+  }
+  h1.display .em { color: var(--purple-light); }
+  .hero p.lead {
+    margin-top: 22px;
+    font-size: 18px;
+    color: var(--grey);
+    max-width: 540px;
+  }
+  .hero-cta {
+    margin-top: 36px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 15px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--purple-light), var(--purple));
+    color: white;
+  }
+  .btn-ghost {
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--off-white);
+  }
+
+  /* Projects */
+  .projects {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 6% 100px;
+  }
+  .section-label {
+    font-size: 14px;
+    color: var(--purple-light);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .section-title.display {
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 700;
+    margin-bottom: 50px;
+    max-width: 500px;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .card:hover {
+    border-color: rgba(140,100,230,0.4);
+    background: rgba(255,255,255,0.05);
+  }
+  .card .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #6ee7a0;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .card .status.dev { color: #f0b459; }
+  .card .status .sdot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .card h3.display {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .card p.desc {
+    font-size: 14.5px;
+    color: var(--grey);
+    flex-grow: 1;
+    margin-bottom: 24px;
+  }
+  .card .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .card .tag {
+    font-size: 12px;
+    color: var(--purple-light);
+    background: rgba(140,100,230,0.12);
+    padding: 5px 12px;
+    border-radius: 20px;
+  }
+  .card .visit {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--off-white);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card.placeholder {
+    border-style: dashed;
+    background: transparent;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--grey);
+  }
+  .card.placeholder .plus {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  /* Contact band */
+  .contact-band {
+    max-width: 1200px;
+    margin: 0 auto 100px;
+    padding: 60px 6%;
+    background: linear-gradient(135deg, rgba(75,63,176,0.25), rgba(140,100,230,0.1));
+    border-radius: 24px;
+    text-align: center;
+  }
+  .contact-band h2.display {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 700;
+  }
+  .contact-band p {
+    margin-top: 12px;
+    color: var(--grey);
+    font-size: 16px;
+  }
+  .contact-band .hero-cta { justify-content: center; margin-top: 28px; }
+
+  footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 6% 50px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--grey);
+  }
+
+  /* About */
+  .about {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 6% 100px;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .about h2.display {
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 700;
+    max-width: 380px;
+  }
+  .about-text p {
+    color: var(--grey);
+    font-size: 16px;
+    margin-bottom: 16px;
+    max-width: 540px;
+  }
+  .about-text strong { color: var(--off-white); }
+
+  /* Services */
+  .services {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 6% 100px;
+  }
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 50px;
+  }
+  .service-card {
+    padding: 30px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .service-card .num {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    color: var(--purple-light);
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+  .service-card h3.display {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .service-card p {
+    font-size: 14.5px;
+    color: var(--grey);
+  }
+
+  /* Process */
+  .process {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 6% 100px;
+  }
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 50px;
+  }
+  .step {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 28px;
+  }
+  .step .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple-light), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .step h4.display {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .step p {
+    font-size: 14px;
+    color: var(--grey);
+  }
+
+  @media (max-width: 780px) {
+    .about { grid-template-columns: 1fr; gap: 24px; }
+  }
+  @media (max-width: 640px) {
+    nav .links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<nav>
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 3L9 14M20 3l-5 17-4-8-8-4 17-5z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="brand-name">DZOFFICIAL</span>
+  </div>
+  <div class="links">
+    <a href="#projekti">Projekti</a>
+    <a href="#kontakt">Kontakt</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="kicker"><span class="dot"></span> Dostupan za nove projekte</div>
+  <h1 class="display">Pravim <span class="em">alate, sajtove i sadržaj</span> uz pomoć AI-a.</h1>
+  <p class="lead">Ovde skupljam sve što napravim — od digitalnih proizvoda do sajtova rađenih uz AI alate. Novi projekti se dodaju kako nastaju.</p>
+  <div class="hero-cta">
+    <a href="https://vucenovic0.gumroad.com/l/50prompts" class="btn btn-primary" target="_blank">Pogledaj AI prompt paket →</a>
+    <a href="https://tiktok.com/@dzoniofficial4" class="btn btn-ghost" target="_blank">Prati na TikTok-u</a>
+  </div>
+</section>
+
+<section class="about">
+  <h2 class="display">O meni</h2>
+  <div class="about-text">
+    <p>Radim na spoju <strong>AI alata i praktičnih rešenja</strong> — od gotovih promptova koji štede vreme, do funkcionalnih sajtova i aplikacija napravljenih brzo i bez nepotrebne komplikacije.</p>
+    <p>Cilj mi je jednostavan: da mala preduzeća i pojedinci dobiju alate i sajtove <strong>profesionalnog kvaliteta</strong>, bez cene i vremena koje obično ide uz angažovanje agencije.</p>
+  </div>
+</section>
+
+<section class="services">
+  <div class="section-label">Usluge</div>
+  <h2 class="section-title display">Šta mogu da napravim za tebe</h2>
+  <div class="service-grid">
+    <div class="service-card">
+      <div class="num">01</div>
+      <h3 class="display">Landing stranice i sajtovi</h3>
+      <p>Jednostavan, brz sajt za tvoj biznis ili uslugu — jasna prezentacija, dugme za kontakt, prilagođeno mobilnim uređajima.</p>
+    </div>
+    <div class="service-card">
+      <div class="num">02</div>
+      <h3 class="display">AI prompt paketi</h3>
+      <p>Gotovi promptovi za reklame, email marketing i sadržaj — prilagođeni tvojoj niši i tonu tvog brenda.</p>
+    </div>
+    <div class="service-card">
+      <div class="num">03</div>
+      <h3 class="display">Male web aplikacije</h3>
+      <p>Praktični alati za svakodnevne potrebe — rasporedi, kalkulatori, jednostavni sistemi za praćenje.</p>
+    </div>
+  </div>
+</section>
+
+<section class="process">
+  <div class="section-label">Proces</div>
+  <h2 class="section-title display">Kako izgleda saradnja</h2>
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h4 class="display">Javiš se</h4>
+      <p>Pišeš mi na TikTok-u šta ti treba — sajt, alat ili nešto treće.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h4 class="display">Dogovor</h4>
+      <p>Kratko razjasnimo detalje, rok i šta tačno ulazi u izradu.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h4 class="display">Izrada</h4>
+      <p>Pravim rešenje uz AI alate — brzo, bez nepotrebnog čekanja.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h4 class="display">Isporuka</h4>
+      <p>Dobijaš gotov proizvod, spreman za upotrebu.</p>
+    </div>
+  </div>
+</section>
+
+<section class="projects" id="projekti">
+  <div class="section-label">Radovi</div>
+  <h2 class="section-title display">Projekti napravljeni uz AI alate</h2>
+
+  <div class="project-grid">
+    <a href="https://smjenski-ritam.vercel.app" target="_blank" class="card">
+      <div class="status"><span class="sdot"></span> Live</div>
+      <h3 class="display">Smjenski ritam</h3>
+      <p class="desc">Web aplikacija za praćenje i pregled rasporeda smena — jednostavan uvid u smenski ritam bez papirologije.</p>
+      <div class="tags">
+        <span class="tag">Web app</span>
+        <span class="tag">Claude</span>
+      </div>
+      <div class="visit">Otvori aplikaciju →</div>
+    </a>
+
+    <a href="https://vucenovic0.gumroad.com/l/50prompts" target="_blank" class="card">
+      <div class="status"><span class="sdot"></span> Live</div>
+      <h3 class="display">50 AI promptova</h3>
+      <p class="desc">Digitalni proizvod — 50 gotovih promptova za reklame, email marketing, TikTok skripte i opise proizvoda.</p>
+      <div class="tags">
+        <span class="tag">Digitalni proizvod</span>
+        <span class="tag">Gumroad</span>
+      </div>
+      <div class="visit">Pogledaj paket →</div>
+    </a>
+
+    <div class="card placeholder">
+      <div class="plus">+</div>
+      <div>Sledeći projekat uskoro</div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-band" id="kontakt">
+  <h2 class="display">Imaš ideju za sajt ili alat?</h2>
+  <p>Javi se preko TikTok-a — pišem, pravim i objavljujem sve na jednom mestu.</p>
+  <div class="hero-cta">
+    <a href="https://tiktok.com/@dzoniofficial4" class="btn btn-primary" target="_blank">Piši mi na TikTok-u</a>
+  </div>
+</section>
+
+<footer>
+  <span>DZOFFICIAL © 2026</span>
+  <span>Napravljeno uz AI alate</span>
+</footer>
+
+</body>
+</html

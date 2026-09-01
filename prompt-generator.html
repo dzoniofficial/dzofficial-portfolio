@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator promptova — dzofficial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&subset=latin,latin-ext&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0: #120c1c;
+    --bg-1: #1c1330;
+    --bg-2: #251a3c;
+    --violet: #8b6bf0;
+    --violet-soft: #4a3a7a;
+    --magenta: #d84fc0;
+    --amber: #f0b940;
+    --ink: #f3eef8;
+    --ink-dim: #a898c4;
+    --line: #362851;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 600px at 10% -10%, #2c1f47 0%, transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, #351f42 0%, transparent 55%),
+      var(--bg-0);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+  }
+
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:52px 20px 80px;
+  }
+
+  header.hero{
+    margin-bottom:36px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+  }
+  .hero-text{flex:1; min-width:0;}
+  .logo-mark{
+    flex:none;
+    width:76px;
+    height:76px;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 8px 24px rgba(139,107,240,.35);
+    border:1px solid var(--line);
+  }
+  .logo-mark img{width:100%; height:100%; object-fit:cover; display:block;}
+  @media (max-width:520px){
+    .logo-mark{width:56px; height:56px; border-radius:16px;}
+  }
+
+  .brandline{
+    font-size:13.5px;
+    color:var(--ink-dim);
+    margin:0 0 16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .brandline .dot{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--amber);
+  }
+
+  h1{
+    font-family:'Zilla Slab', serif;
+    font-weight:600;
+    font-size:clamp(30px, 6.5vw, 46px);
+    line-height:1.08;
+    margin:0 0 14px;
+    max-width:15ch;
+  }
+
+  .sub{
+    color:var(--ink-dim);
+    font-size:16px;
+    max-width:48ch;
+    margin:0;
+  }
+
+  /* Category grid */
+  .cat-label{
+    font-size:13.5px;
+    color:var(--ink-dim);
+    margin:0 0 12px;
+  }
+  .cat-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:28px;
+  }
+  @media (max-width:480px){
+    .cat-grid{grid-template-columns:1fr;}
+  }
+  .cat-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--bg-1);
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+  .cat-card:hover{border-color:var(--violet-soft); transform:translateY(-1px);}
+  .cat-card.active{
+    background:linear-gradient(135deg, rgba(139,107,240,.18), rgba(216,79,192,.10));
+    border-color:var(--violet);
+  }
+  .cat-icon{
+    width:38px; height:38px;
+    flex:none;
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+    background:var(--bg-0);
+  }
+  .cat-card.active .cat-icon{background:var(--violet);}
+  .cat-text{display:flex; flex-direction:column;}
+  .cat-title{font-size:14.5px; font-weight:500; color:var(--ink);}
+  .cat-desc{font-size:12.5px; color:var(--ink-dim); margin-top:1px;}
+
+  /* Form panel */
+  .panel{
+    background:linear-gradient(155deg, var(--bg-1), var(--bg-2));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:26px;
+    margin-bottom:22px;
+  }
+
+  .field{margin-bottom:20px;}
+  .field:last-child{margin-bottom:0;}
+
+  .field-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:9px;
+  }
+
+  label{font-size:14px; color:var(--ink-dim);}
+
+  .fill-example{
+    font-size:12.5px;
+    color:var(--amber);
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    font-family:'IBM Plex Sans', sans-serif;
+  }
+  .fill-example:hover{text-decoration:underline;}
+
+  input[type="text"], select{
+    width:100%;
+    background:var(--bg-0);
+    border:1px solid var(--line);
+    color:var(--ink);
+    border-radius:10px;
+    padding:13px 14px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:15.5px;
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  input[type="text"]::placeholder{color:#5f5280;}
+  input[type="text"]:focus, select:focus{border-color:var(--violet);}
+
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:520px){.row2{grid-template-columns:1fr;}}
+
+  .generate-btn{
+    width:100%;
+    background:linear-gradient(135deg, var(--amber), #e79b2a);
+    color:#241705;
+    border:none;
+    border-radius:12px;
+    padding:16px;
+    font-size:16px;
+    font-weight:600;
+    font-family:'IBM Plex Sans', sans-serif;
+    cursor:pointer;
+    margin-top:4px;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .generate-btn:hover{
+    box-shadow:0 8px 24px rgba(240,185,64,.28);
+    transform:translateY(-1px);
+  }
+  .generate-btn:active{transform:translateY(0);}
+
+  /* Output */
+  .output-panel{
+    border-color:var(--violet);
+    display:none;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .35s ease, transform .35s ease;
+  }
+  .output-panel.show{display:block;}
+  .output-panel.visible{opacity:1; transform:translateY(0);}
+
+  .output-label{
+    font-size:13px;
+    color:var(--ink-dim);
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .output-label .check{color:var(--amber);}
+
+  .output-text{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:15.5px;
+    line-height:1.65;
+    color:var(--ink);
+    white-space:pre-wrap;
+    background:var(--bg-0);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+    margin-bottom:16px;
+    border-left:3px solid var(--violet);
+  }
+
+  .copy-btn{
+    background:transparent;
+    border:1px solid var(--violet);
+    color:var(--violet);
+    padding:11px 22px;
+    border-radius:10px;
+    font-size:14.5px;
+    font-family:'IBM Plex Sans', sans-serif;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .copy-btn:hover{background:var(--violet); color:#fff;}
+  .copy-btn.copied{background:var(--magenta); border-color:var(--magenta); color:#fff;}
+
+  footer{
+    margin-top:36px;
+    padding-top:26px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  footer p{margin:0; font-size:13.5px; color:var(--ink-dim); max-width:34ch;}
+  footer a{
+    color:var(--amber);
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+    border-bottom:1px solid transparent;
+  }
+  footer a:hover{border-bottom-color:var(--amber);}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hero-text">
+      <p class="brandline"><span class="dot"></span>dzofficial / alati</p>
+      <h1>Sastavi gotov prompt za pola minuta</h1>
+      <p class="sub">Izaberi vrstu sadržaja, popuni nekoliko polja — alat sastavi ceo prompt spreman za ChatGPT ili Claude.</p>
+    </div>
+    <div class="logo-mark"><img src="data:image/jpeg;base64,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" alt="dzofficial logo"></div>
+  </header>
+
+  <p class="cat-label">Šta ti treba?</p>
+  <div class="cat-grid" id="categoryGrid">
+    <div class="cat-card active" data-value="fb">
+      <div class="cat-icon">📣</div>
+      <div class="cat-text"><span class="cat-title">Facebook / Instagram reklama</span><span class="cat-desc">Kratak oglasni tekst</span></div>
+    </div>
+    <div class="cat-card" data-value="email">
+      <div class="cat-icon">✉️</div>
+      <div class="cat-text"><span class="cat-title">Email marketing</span><span class="cat-desc">Naslov + telo emaila</span></div>
+    </div>
+    <div class="cat-card" data-value="hook">
+      <div class="cat-icon">⚡</div>
+      <div class="cat-text"><span class="cat-title">Naslovi / hookovi</span><span class="cat-desc">5 varijanti odjednom</span></div>
+    </div>
+    <div class="cat-card" data-value="desc">
+      <div class="cat-icon">🏷️</div>
+      <div class="cat-text"><span class="cat-title">Opis proizvoda</span><span class="cat-desc">Za online prodavnicu</span></div>
+    </div>
+    <div class="cat-card" data-value="tiktok">
+      <div class="cat-icon">🎬</div>
+      <div class="cat-text"><span class="cat-title">TikTok / Reels skripta</span><span class="cat-desc">15-30 sek. video</span></div>
+    </div>
+    <div class="cat-card" data-value="seo">
+      <div class="cat-icon">📝</div>
+      <div class="cat-text"><span class="cat-title">SEO / blog uvod</span><span class="cat-desc">Uvodni pasus teksta</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+
+    <div class="field">
+      <div class="field-head">
+        <label for="product">Proizvod ili usluga</label>
+        <button class="fill-example" onclick="fillExample()">Popuni novi primer</button>
+      </div>
+      <input type="text" id="product" placeholder="npr. online kurs fotografije">
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label for="audience">Ciljna grupa</label>
+        <input type="text" id="audience" placeholder="npr. početnike u fotografiji">
+      </div>
+      <div class="field">
+        <label for="tone">Ton</label>
+        <select id="tone">
+          <option value="prijateljski">Prijateljski</option>
+          <option value="profesionalan">Profesionalan</option>
+          <option value="urgentan">Urgentan / hitan</option>
+          <option value="duhovit">Duhovit</option>
+          <option value="luksuzan">Luksuzan / prestižan</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="benefit">Glavna korist (napiši kao rečenicu)</label>
+      <input type="text" id="benefit" placeholder="npr. da uštedi 5 sati nedeljno">
+    </div>
+
+    <div class="field">
+      <label for="extra">Dodatna napomena (opciono)</label>
+      <input type="text" id="extra" placeholder="npr. da spomene popust od 20%">
+    </div>
+
+    <button class="generate-btn" onclick="generatePrompt()">Sastavi prompt</button>
+
+  </div>
+
+  <div class="panel output-panel" id="outputPanel">
+    <p class="output-label"><span class="check">✓</span>Kopiraj i nalepi u ChatGPT ili Claude</p>
+    <div class="output-text" id="outputText"></div>
+    <button class="copy-btn" id="copyBtn" onclick="copyOutput()">Kopiraj prompt</button>
+  </div>
+
+  <footer>
+    <p>Ovaj alat sastavlja prompt po istoj logici kao paket od 50 gotovih AI promptova.</p>
+    <a href="https://vucenovic0.gumroad.com/l/50prompts">Pogledaj paket sa 50 promptova</a>
+  </footer>
+
+</div>
+
+<script>
+  let selectedCategory = 'fb';
+
+  const examples = {
+    fb: [
+      { product: 'online kurs fotografije', audience: 'početnike u fotografiji', tone: 'prijateljski', benefit: 'da naprave profesionalne fotografije telefonom', extra: 'da spomene popust od 20%' },
+      { product: 'pretplatu na teretanu', audience: 'ljude koji rade od kuće', tone: 'urgentan', benefit: 'da se pokrenu pre nego što prođe još jedan mesec', extra: 'da spomene besplatan probni termin' },
+      { product: 'ručno pravljen sapun', audience: 'ljude sa osetljivom kožom', tone: 'luksuzan', benefit: 'da neguju kožu prirodnim sastojcima bez iritacije', extra: '' }
+    ],
+    email: [
+      { product: 'ličnu konsultaciju o ishrani', audience: 'zaposlene ljude bez vremena za kuvanje', tone: 'profesionalan', benefit: 'da uštede vreme uz jednostavne obroke', extra: '' },
+      { product: 'webinar o ličnim finansijama', audience: 'mlade ljude na prvom poslu', tone: 'prijateljski', benefit: 'da nauče da štede bez odricanja', extra: 'da spomene da je učešće besplatno' },
+      { product: 'godišnju pretplatu na softver za fakturisanje', audience: 'vlasnike malih firmi', tone: 'profesionalan', benefit: 'da uštede sate administracije svakog meseca', extra: 'da spomene popust za rane prijave' }
+    ],
+    hook: [
+      { product: 'aplikaciju za praćenje troškova', audience: 'studente', tone: 'duhovit', benefit: 'da prestanu da troše više nego što zarađuju', extra: '' },
+      { product: 'kurs javnog nastupa', audience: 'introvertne profesionalce', tone: 'prijateljski', benefit: 'da govore pred ljudima bez straha', extra: '' },
+      { product: 'set za negu brade', audience: 'muškarce koji tek puštaju bradu', tone: 'duhovit', benefit: 'da izbegnu neravnomeran i "bockav" izgled', extra: '' }
+    ],
+    desc: [
+      { product: 'ručno rađenu kožnu torbu', audience: 'ljubitelje minimalističkog stila', tone: 'luksuzan', benefit: 'da nosi sve što im treba bez dodatnog prostora', extra: '' },
+      { product: 'organski čaj za opuštanje', audience: 'ljude pod stresom', tone: 'prijateljski', benefit: 'da se smire pred spavanje bez kofeina', extra: '' },
+      { product: 'drveni sto za rad od kuće', audience: 'freelancere', tone: 'profesionalan', benefit: 'da imaju stabilan i udoban radni prostor', extra: '' }
+    ],
+    tiktok: [
+      { product: 'paket AI promptova za reklame', audience: 'vlasnike malih biznisa', tone: 'urgentan', benefit: 'da napišu reklamu za 2 minuta umesto sat vremena', extra: '' },
+      { product: 'kurs montaže videa', audience: 'početnike kreatore sadržaja', tone: 'duhovit', benefit: 'da prestanu da gube sate na jednostavne izmene', extra: '' },
+      { product: 'ličnog trenera onlajn', audience: 'ljude koji treniraju kod kuće', tone: 'prijateljski', benefit: 'da vežbaju pravilno bez odlaska u teretanu', extra: '' }
+    ],
+    seo: [
+      { product: 'prednosti rada od kuće', audience: 'freelancere početnike', tone: 'prijateljski', benefit: 'kako da organizuju dan i ostanu produktivni', extra: '' },
+      { product: 'osnove investiranja', audience: 'mlade ljude bez iskustva', tone: 'profesionalan', benefit: 'kako da naprave prve korake bez straha od gubitka', extra: '' },
+      { product: 'održivu modu', audience: 'svesne potrošače', tone: 'prijateljski', benefit: 'kako da biraju odeću koja traje i ne šteti planeti', extra: '' }
+    ]
+  };
+
+  document.querySelectorAll('.cat-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      selectedCategory = card.dataset.value;
+    });
+  });
+
+  let lastExampleIndex = {};
+
+  function fillExample() {
+    const list = examples[selectedCategory];
+    let idx = Math.floor(Math.random() * list.length);
+    if (list.length > 1 && idx === lastExampleIndex[selectedCategory]) {
+      idx = (idx + 1) % list.length;
+    }
+    lastExampleIndex[selectedCategory] = idx;
+    const ex = list[idx];
+
+    document.getElementById('product').value = ex.product;
+    document.getElementById('audience').value = ex.audience;
+    document.getElementById('tone').value = ex.tone;
+    document.getElementById('benefit').value = ex.benefit;
+    document.getElementById('extra').value = ex.extra;
+  }
+
+  function cap(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  const templates = {
+    fb:     (p) => `Napiši Facebook/Instagram reklamu za ${p.product}, namenjenu ${p.audience}. Ton: ${p.tone}. Fokusiraj se na glavnu korist: ${p.benefit}. Završi jasnim pozivom na akciju. Maksimalno 90 reči.${p.extra}`,
+    email:  (p) => `Napiši marketinški email za ${p.product}, namenjen ${p.audience}. Ton: ${p.tone}. Naglasi korist: ${p.benefit}. Dodaj privlačan naslov emaila (subject line) i jasan poziv na akciju na kraju.${p.extra}`,
+    hook:   (p) => `Smisli 5 udarnih naslova za ${p.product}, namenjenih ${p.audience}. Ton: ${p.tone}. Svaki naslov treba da naglasi: ${p.benefit}. Maksimalno 12 reči po naslovu.${p.extra}`,
+    desc:   (p) => `Napiši opis proizvoda za ${p.product}, namenjen ${p.audience}. Ton: ${p.tone}. Istakni korist: ${p.benefit}. Dužina 60-100 reči, pogodno za online prodavnicu.${p.extra}`,
+    tiktok: (p) => `Napiši kratku TikTok/Reels skriptu (15-30 sekundi) koja promoviše ${p.product} za ${p.audience}. Ton: ${p.tone}. U prve 2 sekunde uvedi jak hook vezan za: ${p.benefit}. Završi pozivom na akciju.${p.extra}`,
+    seo:    (p) => `Napiši uvod za blog tekst (oko 150 reči) o temi ${p.product}, namenjen ${p.audience} čitaocima. Ton: ${p.tone}. Uvod treba da najavi ${p.benefit} i podstakne čitaoca da nastavi čitanje.${p.extra}`
+  };
+
+  function generatePrompt() {
+    const product = document.getElementById('product').value.trim() || '[tvoj proizvod]';
+    const audience = document.getElementById('audience').value.trim() || '[ciljna grupa]';
+    const tone = document.getElementById('tone').value;
+    const benefit = document.getElementById('benefit').value.trim() || '[glavna korist]';
+    const extraRaw = document.getElementById('extra').value.trim();
+    const extra = extraRaw ? ` Dodatna napomena: ${extraRaw}.` : '';
+
+    const text = cap(templates[selectedCategory]({ product, audience, tone, benefit, extra }));
+
+    const outputEl = document.getElementById('outputText');
+    const panel = document.getElementById('outputPanel');
+    outputEl.textContent = text;
+    panel.classList.add('show');
+    requestAnimationFrame(() => panel.classList.add('visible'));
+
+    document.getElementById('copyBtn').textContent = 'Kopiraj prompt';
+    document.getElementById('copyBtn').classList.remove('copied');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('outputText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'Kopirano ✓';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Kopiraj prompt';
+        btn.classList.remove('copied');
+      }, 1800);
+    });
+  }
+</script>
+
+</body>
+</html>

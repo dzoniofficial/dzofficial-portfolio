@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>50 AI promptova — Arhiva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16112e;
+    --purple-deep: #241a5e;
+    --purple: #4b3fb0;
+    --purple-light: #8c64e6;
+    --off-white: #f3f1fa;
+    --grey: #a79fc9;
+    --amber: #f0b940;
+    --line: #2a2350;
+    --card: rgba(255,255,255,0.03);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--ink);
+    color: var(--off-white);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .display { font-family: 'Sora', sans-serif; }
+  .bg-glow {
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(140,100,230,0.18), transparent 45%),
+      radial-gradient(circle at 90% 20%, rgba(75,63,176,0.22), transparent 45%);
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 24px 18px 60px; }
+  a.back { color: var(--grey); text-decoration: none; font-size: 13px; display: inline-block; margin-bottom: 18px; }
+
+  .brandline { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--grey); margin-bottom: 10px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple-light); display: inline-block; }
+  .top-row { display: flex; justify-content: space-between; align-items: flex-start; }
+  #langBtn {
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--line);
+    border-radius: 8px; font-size: 11px; font-weight: 600; padding: 5px 9px;
+    cursor: pointer; color: var(--off-white); font-family: 'Inter', sans-serif;
+  }
+  h1 { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.3px; margin: 10px 0 8px; line-height: 1.1; }
+  .sub { font-size: 13.5px; color: var(--grey); margin-bottom: 18px; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .tab-btn {
+    padding: 9px 16px; border: none; border-radius: 10px; font-weight: 600; font-size: 13px;
+    cursor: pointer; background: rgba(255,255,255,0.04); color: var(--grey); font-family: 'Inter', sans-serif;
+  }
+  .tab-btn.active { background: linear-gradient(135deg, var(--purple-light), var(--purple)); color: #fff; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .cat-card { border: 1px solid var(--line); background: var(--card); border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+  .cat-head { display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+  .cat-head span.name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 13.5px; }
+  .badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+  .badge.free { background: rgba(140,100,230,0.15); color: var(--purple-light); }
+  .badge.locked { background: rgba(240,185,64,0.12); color: var(--amber); }
+
+  .prompt-list { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  .prompt-text { font-size: 12.5px; line-height: 1.55; }
+  .prompt-text .ph { color: var(--amber); }
+  .copy-btn {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+    background: transparent; border: 1px solid var(--line); color: var(--grey);
+    border-radius: 8px; padding: 6px 12px; cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+  .copy-btn.copied { background: rgba(140,100,230,0.15); border-color: var(--purple-light); color: var(--purple-light); }
+
+  .locked-wrap { position: relative; padding: 14px; }
+  .blurred { filter: blur(4px); user-select: none; opacity: 0.5; display: flex; flex-direction: column; gap: 10px; font-size: 12.5px; }
+  .lock-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+  .lock-pill { display: flex; align-items: center; gap: 6px; background: rgba(22,17,46,0.9); border: 1px solid var(--line); border-radius: 8px; color: var(--grey); font-size: 11px; font-weight: 600; padding: 5px 11px; }
+  .unlock-link { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 12.5px; color: var(--amber); text-decoration: none; background: rgba(22,17,46,0.9); padding: 6px 12px; border-radius: 8px; }
+
+  .type-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .type-btn { padding: 6px 11px; border-radius: 8px; font-size: 11.5px; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--grey); font-family: 'Inter', sans-serif; }
+  .type-btn.active { border-color: var(--purple-light); background: rgba(140,100,230,0.15); color: var(--purple-light); }
+
+  .example-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; background: transparent; border: 1px dashed var(--line); border-radius: 8px; color: var(--grey); font-size: 12px; font-weight: 600; padding: 8px 0; cursor: pointer; margin-bottom: 14px; font-family: 'Inter', sans-serif; }
+
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 11.5px; color: var(--grey); margin-bottom: 5px; }
+  .field input, .field select {
+    width: 100%; padding: 9px 11px; font-size: 13px; background: rgba(255,255,255,0.04);
+    border: 1px solid var(--line); border-radius: 8px; color: var(--off-white); font-family: 'Inter', sans-serif;
+  }
+  .row2 { display: flex; gap: 10px; }
+  .row2 .field { flex: 1; }
+
+  .gen-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    background: linear-gradient(135deg, var(--amber), #e79b2a); color: #241705; border: none;
+    border-radius: 10px; padding: 12px 0; font-weight: 700; font-size: 14px; cursor: pointer;
+    margin-bottom: 14px; font-family: 'Inter', sans-serif;
+  }
+
+  .output-box { border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .output-label { font-size: 11px; color: var(--grey); margin-bottom: 8px; font-weight: 600; }
+  #outputText { font-size: 13px; line-height: 1.6; color: var(--off-white); margin-bottom: 12px; }
+  #outputText.empty { color: var(--grey); font-size: 12.5px; }
+  .footer-note { font-size: 11.5px; color: var(--grey); text-align: center; }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="wrap">
+  <a class="back" href="index.html">← Nazad na portfolio</a>
+
+  <div class="top-row">
+    <p class="brandline"><span class="dot"></span><span id="brandlineText">dzofficial / alati</span></p>
+    <button id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <h1 class="display" id="titleText">50 AI promptova</h1>
+  <p class="sub" id="subText">Arhiva gotovih promptova za reklame i marketing copy — pretraži paket ili sastavi svoj.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBrowseBtn" onclick="switchTab('browse')"></button>
+    <button class="tab-btn" id="tabGenBtn" onclick="switchTab('generator')"></button>
+  </div>
+
+  <div class="panel active" id="browsePanel"></div>
+
+  <div class="panel" id="generatorPanel">
+    <div class="type-row" id="typeRow"></div>
+    <button class="example-btn" id="exampleBtn" onclick="fillExample()">🎲 <span id="exampleBtnText">Popuni primer</span></button>
+
+    <div class="field">
+      <label id="lblProduct">Proizvod/usluga</label>
+      <input id="product" placeholder="npr. online kurs fotografije">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label id="lblAudience">Ciljna grupa</label>
+        <input id="audience" placeholder="npr. početnike u fotografiji">
+      </div>
+      <div class="field">
+        <label id="lblTone">Ton</label>
+        <select id="tone"></select>
+      </div>
+    </div>
+    <div class="field">
+      <label id="lblBenefit">Glavna korist</label>
+      <input id="benefit" placeholder="npr. da uštede 5 sati nedeljno">
+    </div>
+    <div class="field">
+      <label id="lblExtra">Dodatna napomena (opciono)</label>
+      <input id="extra" placeholder="npr. da spomene popust od 20%">
+    </div>
+
+    <button class="gen-btn" onclick="generatePrompt()">✨ <span id="genBtnText">Sastavi prompt</span></button>
+
+    <div class="output-box">
+      <div class="output-label" id="lblOutput">Tvoj prompt</div>
+      <div id="outputText" class="empty">Popuni polja i klikni „Sastavi prompt”.</div>
+      <button class="copy-btn" id="copyOutputBtn" onclick="copyOutput()" style="display:none;">
+        <span id="copyOutputIcon">⧉</span> <span id="copyOutputText">Kopiraj</span>
+      </button>
+    </div>
+    <p class="footer-note" id="footerNote">Isti promptovi kao u punom paketu od 50 — ovo je samo deo.</p>
+  </div>
+</div>
+
+<script>
+const GUMROAD = {
+  sr: "https://vucenovic0.gumroad.com/l/50prompts",
+  en: "https://vucenovic0.gumroad.com/l/50promptsen"
+};
+
+const T = {
+  sr: { brandline: "dzofficial / alati", title: "50 AI promptova",
+    sub: "Arhiva gotovih promptova za reklame i marketing copy — pretraži paket ili sastavi svoj.",
+    tabBrowse: "Arhiva", tabGen: "Generator", free: "besplatno", locked: "Deo punog paketa",
+    unlock: "Pogledaj ceo paket →", copy: "Kopiraj", copied: "Kopirano",
+    product: "Proizvod/usluga", audience: "Ciljna grupa", tone: "Ton", benefit: "Glavna korist",
+    extra: "Dodatna napomena (opciono)", example: "Popuni primer", generate: "Sastavi prompt",
+    output: "Tvoj prompt", empty: "Popuni polja i klikni „Sastavi prompt”.",
+    footer: "Isti promptovi kao u punom paketu od 50 — ovo je samo deo.",
+    productPh: "npr. online kurs fotografije", audiencePh: "npr. početnike u fotografiji",
+    benefitPh: "npr. da uštede 5 sati nedeljno", extraPh: "npr. da spomene popust od 20%",
+    back: "← Nazad na portfolio",
+    yourPh: "[tvoj proizvod]", targetPh: "[ciljna grupa]", benefitPh2: "[glavna korist]",
+    extraNote: " Dodatna napomena: " },
+  en: { brandline: "dzofficial / tools", title: "50 AI prompts",
+    sub: "An archive of ready-made prompts for ads and marketing copy — browse the pack or build your own.",
+    tabBrowse: "Archive", tabGen: "Generator", free: "free", locked: "Part of the full pack",
+    unlock: "View the full pack →", copy: "Copy", copied: "Copied",
+    product: "Product/service", audience: "Target audience", tone: "Tone", benefit: "Main benefit",
+    extra: "Extra note (optional)", example: "Fill example", generate: "Build prompt",
+    output: "Your prompt", empty: "Fill in the fields and click “Build prompt”.",
+    footer: "Same prompts as the full 50-pack — this is just a slice.",
+    productPh: "e.g. an online photography course", audiencePh: "e.g. beginner photographers",
+    benefitPh: "e.g. save 5 hours a week", extraPh: "e.g. mention a 20% discount",
+    back: "← Back to portfolio",
+    yourPh: "[your product]", targetPh: "[target audience]", benefitPh2: "[main benefit]",
+    extraNote: " Extra note: " }
+};
+
+const TONES = {
+  sr: [["prijateljski","Prijateljski"],["profesionalan","Profesionalan"],["urgentan","Urgentan / hitan"],["duhovit","Duhovit"],["luksuzan","Luksuzan / prestižan"]],
+  en: [["friendly","Friendly"],["professional","Professional"],["urgent","Urgent"],["witty","Witty"],["luxury","Luxury / premium"]]
+};
+
+const CATEGORIES = {
+  sr: [
+    { name: "Reklame za Facebook i Instagram", free: true, prompts: [
+      "Napiši Facebook reklamu za [proizvod/usluga] namenjenu [ciljna grupa]. Ton: [ton, npr. prijateljski/urgentan]. Fokusiraj se na glavnu korist proizvoda i završi jasnim pozivom na akciju. Maksimalno 90 reči.",
+      "Napravi 5 verzija kratkog Instagram reklamnog teksta (do 40 reči svaka) za [proizvod], svaka sa drugačijim uglom: cena, kvalitet, brzina, društveni dokaz, hitnost.",
+      "Napiši reklamu koja koristi 'problem-rešenje-poziv na akciju' formulu za [proizvod/usluga], namenjenu ljudima koji se bore sa [problem koji proizvod rešava].",
+      "Kreiraj reklamni tekst u stilu testimonijala (kao da ga je napisao zadovoljan kupac) za [proizvod], bez izmišljanja imena ili lažnih tvrdnji — samo ton i strukturu.",
+      "Napiši reklamu za retargeting kampanju za ljude koji su posetili sajt ali nisu kupili [proizvod]. Naglasi razlog da se vrate (popust, ograničena zaliha, podsetnik na korist).",
+      "Napravi kratak reklamni tekst koji postavlja pitanje kao hook na početku, a zatim predstavlja [proizvod] kao odgovor. Ciljna grupa: [opis].",
+      "Napiši reklamu za lansiranje novog proizvoda [naziv] koja naglašava da je 'upravo stigao' i stvara osećaj ekskluzivnosti.",
+      "Kreiraj reklamu koja koristi statistiku ili broj (npr. '87% korisnika...') kao hook za [proizvod], uz napomenu da broj treba da bude realan/proveren.",
+      "Napiši kratku reklamu za sezonsku/praznicnu promociju za [proizvod], sa naglaskom na ograničeno vreme trajanja ponude.",
+      "Napravi reklamni tekst koji direktno oslovljava ciljnu grupu ('Ako si [opis], ovo je za tebe') i predstavlja [proizvod] kao rešenje." ]},
+    { name: "Email marketing", free: true, prompts: [
+      "Napiši dobrodošli email za nove pretplatnike koji se prijave na listu vezanu za [tema/niša]. Ton: topao i ličan. Uključi jedan jasan sledeći korak za čitaoca.",
+      "Napravi email kampanju od 3 poruke koja predstavlja [proizvod] postepeno: prva gradi poverenje, druga daje vrednost/savet, treća poziva na kupovinu.",
+      "Napiši email sa naslovom koji povećava stopu otvaranja za promociju [proizvod/popust], izbegavajući reči koje idu u spam.",
+      "Kreiraj 'abandoned cart' email koji podseća korisnika da je ostavio [proizvod] u korpi, uz blag ton i jedan razlog da završi kupovinu.",
+      "Napiši newsletter u kome deliš jedan koristan savet vezan za [tema] i usput prirodno pominješ [proizvod/uslugu] kao rešenje.",
+      "Napravi email koji najavljuje ograničenu ponudu (flash sale) za [proizvod] sa jasnim rokom i razlogom hitnosti.",
+      "Napiši re-engagement email za pretplatnike koji dugo nisu otvarali poruke, sa ciljem da ih vratiš uz iskren i ne-nametljiv ton.",
+      "Kreiraj email u kojem odgovaraš na najčešću primedbu/pitanje o [proizvod] (npr. cena, efikasnost) i time otklanjaš sumnju pre kupovine." ]},
+    { name: "Naslovi i hook rečenice", free: true, prompts: [
+      "Napravi 10 naslova za [proizvod/sadržaj] koristeći formulu koristi + specifičnost (npr. 'Kako da [rezultat] za [vremenski period]').",
+      "Napiši 10 hook rečenica za kratak video o [tema] koje traju manje od 3 sekunde čitanja i izazivaju radoznalost.",
+      "Kreiraj naslov u obliku pitanja koji cilja na najveći strah ili želju ciljne grupe vezano za [tema/proizvod].",
+      "Napravi 5 naslova koji koriste broj i konkretan rezultat (npr. '3 greške koje...') vezano za [tema].",
+      "Napiši kontroverzan, ali istinit hook koji izaziva reakciju (slaganje ili neslaganje) na temu [tema], bez klik-mamac obmane.",
+      "Kreiraj naslov koji poredi 'pre i posle' stanje vezano za [problem koji proizvod rešava].",
+      "Napravi 5 naslova u stilu 'tajna/greška koju svi prave' za temu [tema], bez preterivanja i lažnih obećanja.",
+      "Napiši hook koji počinje direktnim obraćanjem gledaocu ('Ako radiš X, stani i pročitaj ovo') vezano za [tema/proizvod]." ]},
+    { name: "Opisi proizvoda", free: false, prompts: [
+      "Napiši prodajni opis za [proizvod] koji ističe 3 glavne koristi (ne samo karakteristike) za ciljnu grupu [opis].",
+      "Kreiraj kratak opis proizvoda (do 60 reči) za [proizvod] namenjen prikazu na listing stranici (Etsy/Gumroad stil)." ]},
+    { name: "Video skripte za TikTok i Reels", free: false, prompts: [
+      "Napiši skriptu od 30 sekundi za TikTok video koji predstavlja [proizvod/alat] kroz 'problem → rešenje → poziv na akciju' strukturu.",
+      "Kreiraj skriptu za faceless video (samo naracija preko snimka ekrana) koja objašnjava kako se koristi [AI alat/proizvod] u 3 koraka." ]},
+    { name: "SEO i blog sadržaj", free: false, prompts: [
+      "Napiši SEO naslov i meta opis za blog članak na temu [tema], dužina meta opisa do 155 karaktera.",
+      "Napravi strukturu (naslove i podnaslove) za blog članak od 1000 reči na temu [tema], namenjen ciljnoj grupi [opis]." ]}
+  ],
+  en: [
+    { name: "Facebook / Instagram Ads", free: true, prompts: [
+      "Write a Facebook/Instagram ad for [product/service] aimed at [target audience]. Tone: [tone]. Focus on the main benefit: [benefit]. End with a clear call to action. Max 90 words.",
+      "Write 3 short ad variations for [product] targeting [audience], each testing a different angle: price, urgency, and social proof. Max 40 words each.",
+      "Write a Facebook ad that opens with a question about [audience]'s biggest frustration with [problem], then introduces [product] as the fix. End with [CTA].",
+      "Write an Instagram carousel ad script (5 slides) for [product], where each slide reveals one benefit. Keep each slide under 15 words.",
+      "Write a limited-time offer ad for [product/service], creating urgency around [deadline/discount]. Tone: urgent. End with a clickable CTA.",
+      "Write a \"before and after\" style ad for [product], contrasting life without it versus with it for [audience].",
+      "Write a testimonial-style ad caption for [product], written as if a satisfied customer named [name] is describing [result].",
+      "Write a retargeting ad for people who viewed [product] but didn't buy, addressing their likely objection: [objection].",
+      "Write a seasonal ad for [product], tied to [occasion], with a festive but still professional tone." ]},
+    { name: "Email Marketing", free: true, prompts: [
+      "Write a marketing email for [product/service], aimed at [audience]. Tone: [tone]. Highlight the benefit: [benefit]. Include a compelling subject line and a clear CTA at the end.",
+      "Write a welcome email for new subscribers to [brand/newsletter], introducing what they can expect and one quick win they can use today.",
+      "Write an abandoned cart email for [product], reminding the customer what they're missing and offering [incentive] to complete the purchase.",
+      "Write a re-engagement email for inactive customers of [brand], with a subject line that creates curiosity and a soft offer to bring them back.",
+      "Write a product launch announcement email for [product], building excitement and explaining the top 3 features in plain language.",
+      "Write a \"last chance\" email for [offer/deadline], with urgency in the subject line and body, ending with a direct CTA.",
+      "Write a newsletter email sharing one useful tip related to [topic], with a natural mention of [product] as a next step.",
+      "Write a thank-you email for a recent purchase of [product], including a small upsell suggestion for [related product]." ]},
+    { name: "Headlines & Hooks", free: true, prompts: [
+      "Write 5 punchy headlines for [product], aimed at [audience]. Tone: [tone]. Each headline should highlight: [benefit]. Max 12 words per headline.",
+      "Write 5 headlines that start with a number or statistic relevant to [product/industry].",
+      "Write 5 \"you\"-focused headlines that speak directly to [audience]'s specific problem: [problem].",
+      "Write 5 curiosity-driven headlines for [product] that don't reveal the full benefit, making people want to click.",
+      "Write 5 headlines using a \"how to\" format for achieving [result] with [product].",
+      "Write 5 contrarian or myth-busting headlines related to [topic/industry].",
+      "Write 5 headlines that use social proof (customer numbers, ratings, results) for [product].",
+      "Write 5 short, punchy hooks under 8 words for a TikTok video about [topic]." ]},
+    { name: "Product Descriptions", free: false, prompts: [
+      "Write a product description for [product], aimed at [audience]. Tone: [tone]. Highlight the benefit: [benefit]. Length: 60-100 words, suitable for an online store.",
+      "Write a short, punchy product description (under 40 words) for [product], focused on one standout feature." ]},
+    { name: "TikTok / Reels Scripts", free: false, prompts: [
+      "Write a short TikTok/Reels script (15-30 seconds) promoting [product] for [audience]. Tone: [tone]. Open with a strong hook about [benefit]. End with a call to action.",
+      "Write a TikTok script structured as a \"day in the life\" that naturally features [product] being used." ]},
+    { name: "SEO / Blog Content", free: false, prompts: [
+      "Write an SEO-friendly blog introduction (about 150 words) on the topic of [topic], aimed at [audience]. Tone: [tone]. The intro should preview the benefit: [benefit] and make the reader want to keep reading.",
+      "Write 5 blog post title ideas targeting the keyword [keyword], each under 60 characters for SEO." ]}
+  ]
+};
+
+const GEN_TYPES = {
+  sr: [["fb","Facebook/Insta oglas"],["email","Email"],["hook","Naslovi"],["desc","Opis proizvoda"],["tiktok","TikTok skripta"],["seo","Blog uvod"]],
+  en: [["fb","Facebook/Insta ad"],["email","Email"],["hook","Headlines"],["desc","Product description"],["tiktok","TikTok script"],["seo","Blog intro"]]
+};
+
+const TEMPLATES = {
+  sr: {
+    fb: p => `Napiši Facebook/Instagram oglas za ${p.product}, namenjen ${p.audience}. Ton: ${p.tone}. Fokusiraj se na glavnu korist: ${p.benefit}. Završi jasnim pozivom na akciju. Maksimalno 90 reči.${p.extra}`,
+    email: p => `Napiši marketinški email za ${p.product}, namenjen ${p.audience}. Ton: ${p.tone}. Naglasi korist: ${p.benefit}. Dodaj privlačan naslov emaila (subject line) i jasan poziv na akciju na kraju.${p.extra}`,
+    hook: p => `Smisli 5 udarnih naslova za ${p.product}, namenjenih ${p.audience}. Ton: ${p.tone}. Svaki naslov treba da naglasi: ${p.benefit}. Maksimalno 12 reči po naslovu.${p.extra}`,
+    desc: p => `Napiši opis proizvoda za ${p.product}, namenjen ${p.audience}. Ton: ${p.tone}. Istakni korist: ${p.benefit}. Dužina 60-100 reči, pogodno za online prodavnicu.${p.extra}`,
+    tiktok: p => `Napiši kratku TikTok/Reels skriptu (15-30 sekundi) koja promoviše ${p.product} za ${p.audience}. Ton: ${p.tone}. U prve 2 sekunde uvedi jak hook vezan za: ${p.benefit}. Završi pozivom na akciju.${p.extra}`,
+    seo: p => `Napiši uvod za blog tekst (oko 150 reči) o temi ${p.product}, namenjen ${p.audience} čitaocima. Ton: ${p.tone}. Uvod treba da najavi ${p.benefit} i podstakne čitaoca da nastavi čitanje.${p.extra}`
+  },
+  en: {
+    fb: p => `Write a Facebook/Instagram ad for ${p.product}, aimed at ${p.audience}. Tone: ${p.tone}. Focus on the main benefit: ${p.benefit}. End with a clear call to action. Max 90 words.${p.extra}`,
+    email: p => `Write a marketing email for ${p.product}, aimed at ${p.audience}. Tone: ${p.tone}. Highlight the benefit: ${p.benefit}. Include a compelling subject line and a clear call to action at the end.${p.extra}`,
+    hook: p => `Write 5 punchy headlines for ${p.product}, aimed at ${p.audience}. Tone: ${p.tone}. Each headline should highlight: ${p.benefit}. Max 12 words per headline.${p.extra}`,
+    desc: p => `Write a product description for ${p.product}, aimed at ${p.audience}. Tone: ${p.tone}. Highlight the benefit: ${p.benefit}. Length: 60-100 words, suitable for an online store.${p.extra}`,
+    tiktok: p => `Write a short TikTok/Reels script (15-30 seconds) promoting ${p.product} for ${p.audience}. Tone: ${p.tone}. In the first 2 seconds, open with a strong hook about: ${p.benefit}. End with a call to action.${p.extra}`,
+    seo: p => `Write a blog post introduction (about 150 words) on the topic of ${p.product}, aimed at ${p.audience}. Tone: ${p.tone}. The intro should preview ${p.benefit} and make the reader want to keep reading.${p.extra}`
+  }
+};
+
+const EXAMPLES = {
+  sr: {
+    fb: [ {product:"online kurs fotografije",audience:"početnike u fotografiji",tone:"prijateljski",benefit:"da naprave profesionalne fotografije telefonom",extra:"da spomene popust od 20%"},
+          {product:"pretplatu na teretanu",audience:"ljude koji rade od kuće",tone:"urgentan",benefit:"da se pokrenu pre nego što prođe još jedan mesec",extra:"da spomene besplatan probni termin"},
+          {product:"ručno pravljen sapun",audience:"ljude sa osetljivom kožom",tone:"luksuzan",benefit:"da neguju kožu prirodnim sastojcima bez iritacije",extra:""} ],
+    email: [ {product:"ličnu konsultaciju o ishrani",audience:"zaposlene ljude bez vremena za kuvanje",tone:"profesionalan",benefit:"da uštede vreme uz jednostavne obroke",extra:""},
+             {product:"webinar o ličnim finansijama",audience:"mlade ljude na prvom poslu",tone:"prijateljski",benefit:"da nauče da štede bez odricanja",extra:"da spomene da je učešće besplatno"},
+             {product:"godišnju pretplatu na softver za fakturisanje",audience:"vlasnike malih firmi",tone:"profesionalan",benefit:"da uštede sate administracije svakog meseca",extra:"da spomene popust za rane prijave"} ],
+    hook: [ {product:"aplikaciju za praćenje troškova",audience:"studente",tone:"duhovit",benefit:"da prestanu da troše više nego što zarađuju",extra:""},
+            {product:"kurs javnog nastupa",audience:"introvertne profesionalce",tone:"prijateljski",benefit:"da govore pred ljudima bez straha",extra:""},
+            {product:"set za negu brade",audience:"muškarce koji tek puštaju bradu",tone:"duhovit",benefit:"da izbegnu neravnomeran i \"bockav\" izgled",extra:""} ],
+    desc: [ {product:"ručno rađenu kožnu torbu",audience:"ljubitelje minimalističkog stila",tone:"luksuzan",benefit:"da nosi sve što im treba bez dodatnog prostora",extra:""},
+            {product:"organski čaj za opuštanje",audience:"ljude pod stresom",tone:"prijateljski",benefit:"da se smire pred spavanje bez kofeina",extra:""},
+            {product:"drveni sto za rad od kuće",audience:"freelancere",tone:"profesionalan",benefit:"da imaju stabilan i udoban radni prostor",extra:""} ],
+    tiktok: [ {product:"paket AI promptova za reklame",audience:"vlasnike malih biznisa",tone:"urgentan",benefit:"da napišu reklamu za 2 minuta umesto sat vremena",extra:""},
+              {product:"kurs montaže videa",audience:"početnike kreatore sadržaja",tone:"duhovit",benefit:"da prestanu da gube sate na jednostavne izmene",extra:""},
+              {product:"ličnog trenera onlajn",audience:"ljude koji treniraju kod kuće",tone:"prijateljski",benefit:"da vežbaju pravilno bez odlaska u teretanu",extra:""} ],
+    seo: [ {product:"prednosti rada od kuće",audience:"freelancere početnike",tone:"prijateljski",benefit:"kako da organizuju dan i ostanu produktivni",extra:""},
+           {product:"osnove investiranja",audience:"mlade ljude bez iskustva",tone:"profesionalan",benefit:"kako da naprave prve korake bez straha od gubitka",extra:""},
+           {product:"održivu modu",audience:"svesne potrošače",tone:"prijateljski",benefit:"kako da biraju odeću koja traje i ne šteti planeti",extra:""} ]
+  },
+  en: {
+    fb: [ {product:"an online photography course",audience:"beginner photographers",tone:"friendly",benefit:"take professional-looking photos with just a phone",extra:"mention a 20% discount"},
+          {product:"a gym membership",audience:"people who work from home",tone:"urgent",benefit:"get moving before another month slips by",extra:"mention a free trial session"},
+          {product:"a handmade bar soap",audience:"people with sensitive skin",tone:"luxury",benefit:"care for skin with natural ingredients and no irritation",extra:""} ],
+    email: [ {product:"a 1-on-1 nutrition consultation",audience:"busy professionals with no time to cook",tone:"professional",benefit:"save time with simple, healthy meals",extra:""},
+             {product:"a personal finance webinar",audience:"young people starting their first job",tone:"friendly",benefit:"learn to save without giving up what they enjoy",extra:"mention that attendance is free"},
+             {product:"an annual invoicing software plan",audience:"small business owners",tone:"professional",benefit:"save hours of admin work every month",extra:"mention an early sign-up discount"} ],
+    hook: [ {product:"an expense tracking app",audience:"college students",tone:"witty",benefit:"stop spending more than they earn",extra:""},
+            {product:"a public speaking course",audience:"introverted professionals",tone:"friendly",benefit:"speak in front of people without the fear",extra:""},
+            {product:"a beard grooming kit",audience:"men just starting to grow a beard",tone:"witty",benefit:"avoid a patchy, scratchy-looking beard",extra:""} ],
+    desc: [ {product:"a handmade leather bag",audience:"people who love a minimalist style",tone:"luxury",benefit:"carry everything they need without extra bulk",extra:""},
+            {product:"an organic relaxation tea",audience:"people dealing with daily stress",tone:"friendly",benefit:"wind down before bed without any caffeine",extra:""},
+            {product:"a wooden work-from-home desk",audience:"freelancers",tone:"professional",benefit:"have a stable, comfortable workspace",extra:""} ],
+    tiktok: [ {product:"an AI prompt pack for ads",audience:"small business owners",tone:"urgent",benefit:"write an ad in 2 minutes instead of an hour",extra:""},
+              {product:"a video editing course",audience:"beginner content creators",tone:"witty",benefit:"stop wasting hours on simple edits",extra:""},
+              {product:"an online personal trainer",audience:"people who work out at home",tone:"friendly",benefit:"train with proper form without a gym",extra:""} ],
+    seo: [ {product:"the benefits of working from home",audience:"beginner freelancers",tone:"friendly",benefit:"how to structure a day and stay productive",extra:""},
+           {product:"the basics of investing",audience:"young people with no experience",tone:"professional",benefit:"how to take the first steps without fear of losing money",extra:""},
+           {product:"sustainable fashion",audience:"conscious shoppers",tone:"friendly",benefit:"how to choose clothes that last and are kinder to the planet",extra:""} ]
+  }
+};
+
+let lang = "sr";
+let currentType = "fb";
+
+function esc(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function highlight(text) { return esc(text).replace(/(\[[^\]]+\])/g, '<span class="ph">$1</span>'); }
+
+function renderStatic() {
+  const t = T[lang];
+  document.getElementById('brandlineText').textContent = t.brandline;
+  document.getElementById('titleText').textContent = t.title;
+  document.getElementById('subText').textContent = t.sub;
+  document.getElementById('tabBrowseBtn').textContent = t.tabBrowse;
+  document.getElementById('tabGenBtn').textContent = t.tabGen;
+  document.getElementById('lblProduct').textContent = t.product;
+  document.getElementById('lblAudience').textContent = t.audience;
+  document.getElementById('lblTone').textContent = t.tone;
+  document.getElementById('lblBenefit').textContent = t.benefit;
+  document.getElementById('lblExtra').textContent = t.extra;
+  document.getElementById('exampleBtnText').textContent = t.example;
+  document.getElementById('genBtnText').textContent = t.generate;
+  document.getElementById('lblOutput').textContent = t.output;
+  document.getElementById('footerNote').textContent = t.footer;
+  document.getElementById('product').placeholder = t.productPh;
+  document.getElementById('audience').placeholder = t.audiencePh;
+  document.getElementById('benefit').placeholder = t.benefitPh;
+  document.getElementById('extra').placeholder = t.extraPh;
+  document.querySelector('a.back').textContent = t.back;
+  document.getElementById('langBtn').textContent = lang === 'sr' ? 'EN' : 'SR';
+
+  const toneSel = document.getElementById('tone');
+  toneSel.innerHTML = TONES[lang].map(([v,l]) => `<option value="${v}">${l}</option>`).join('');
+
+  const typeRow = document.getElementById('typeRow');
+  typeRow.innerHTML = GEN_TYPES[lang].map(([v,l]) =>
+    `<button class="type-btn${v===currentType?' active':''}" onclick="switchType('${v}')">${l}</button>`
+  ).join('');
+
+  resetOutput();
+}
+
+function renderBrowse() {
+  const t = T[lang];
+  const cats = CATEGORIES[lang];
+  const html = cats.map(cat => {
+    if (cat.free) {
+      const shown = cat.prompts.slice(0, 3);
+      return `<div class="cat-card">
+        <div class="cat-head"><span class="name">${esc(cat.name)}</span><span class="badge free">${t.free}</span></div>
+        <div class="prompt-list">
+          ${shown.map(p => `<div>
+            <div class="prompt-text">${highlight(p)}</div>
+            <button class="copy-btn" onclick="copyPrompt(this, \`${p.replace(/`/g,"'")}\`)">⧉ ${t.copy}</button>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    } else {
+      const preview = cat.prompts.slice(0, 2).map(p => `<div>${esc(p)}</div>`).join('');
+      return `<div class="cat-card">
+        <div class="cat-head"><span class="name">${esc(cat.name)}</span><span class="badge locked">${t.locked}</span></div>
+        <div class="locked-wrap">
+          <div class="blurred">${preview}</div>
+          <div class="lock-overlay">
+            <div class="lock-pill">🔒 ${cat.prompts.length}</div>
+            <a class="unlock-link" href="${GUMROAD[lang]}" target="_blank" rel="noopener">${t.unlock}</a>
+          </div>
+        </div>
+      </div>`;
+    }
+  }).join('');
+  document.getElementById('browsePanel').innerHTML = html;
+}
+
+function copyPrompt(btn, text) {
+  copyToClipboard(text);
+  const original = btn.innerHTML;
+  btn.innerHTML = '✓ ' + T[lang].copied;
+  btn.classList.add('copied');
+  setTimeout(() => { btn.innerHTML = original; btn.classList.remove('copied'); }, 1500);
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text) {
+  const el = document.createElement('textarea');
+  el.value = text;
+  el.style.position = 'fixed';
+  el.style.opacity = '0';
+  document.body.appendChild(el);
+  el.focus();
+  el.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(el);
+}
+
+function switchTab(tab) {
+  document.getElementById('browsePanel').classList.toggle('active', tab === 'browse');
+  document.getElementById('generatorPanel').classList.toggle('active', tab === 'generator');
+  document.getElementById('tabBrowseBtn').classList.toggle('active', tab === 'browse');
+  document.getElementById('tabGenBtn').classList.toggle('active', tab === 'generator');
+}
+
+function switchType(v) {
+  currentType = v;
+  document.querySelectorAll('.type-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', GEN_TYPES[lang][i][0] === v);
+  });
+  resetOutput();
+}
+
+function fillExample() {
+  const list = EXAMPLES[lang][currentType];
+  const ex = list[Math.floor(Math.random() * list.length)];
+  document.getElementById('product').value = ex.product;
+  document.getElementById('audience').value = ex.audience;
+  document.getElementById('tone').value = ex.tone;
+  document.getElementById('benefit').value = ex.benefit;
+  document.getElementById('extra').value = ex.extra;
+  resetOutput();
+}
+
+function resetOutput() {
+  const t = T[lang];
+  const out = document.getElementById('outputText');
+  out.textContent = t.empty;
+  out.classList.add('empty');
+  document.getElementById('copyOutputBtn').style.display = 'none';
+}
+
+function generatePrompt() {
+  const t = T[lang];
+  const toneVal = document.getElementById('tone').value;
+  const toneLabel = (TONES[lang].find(x => x[0] === toneVal) || [,toneVal])[1].toLowerCase();
+  const productVal = document.getElementById('product').value.trim() || t.yourPh;
+  const audienceVal = document.getElementById('audience').value.trim() || t.targetPh;
+  const benefitVal = document.getElementById('benefit').value.trim() || t.benefitPh2;
+  const extraVal = document.getElementById('extra').value.trim();
+  const extra = extraVal ? `${t.extraNote}${extraVal}.` : '';
+
+  const text = TEMPLATES[lang][currentType]({ product: productVal, audience: audienceVal, tone: toneLabel, benefit: benefitVal, extra });
+
+  const out = document.getElementById('outputText');
+  out.textContent = text;
+  out.classList.remove('empty');
+  document.getElementById('copyOutputBtn').style.display = 'inline-flex';
+  document.getElementById('copyOutputBtn').onclick = () => copyPrompt(document.getElementById('copyOutputBtn'), text);
+}
+
+function toggleLang() {
+  lang = lang === 'sr' ? 'en' : 'sr';
+  document.documentElement.lang = lang;
+  renderStatic();
+  renderBrowse();
+}
+
+renderStatic();
+renderBrowse();
+</script>
+</body>
+</html>
